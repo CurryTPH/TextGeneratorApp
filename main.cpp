@@ -25,6 +25,7 @@ std::mutex mtx;
 std::vector<std::wstring> wordList = { L"Lorem", L"ipsum", L"dolor", L"sit", L"amet", L"consectetur", L"adipiscing", L"elit" };
 std::mt19937 rng(std::random_device{}());
 HWND hwndTextBox, hwndButtonGenerate, hwndButtonSave, hwndParagraphs, hwndSentences, hwndWords;
+HWND hwndLabelParagraphs, hwndLabelSentences, hwndLabelWords;
 
 std::wstring generateText(size_t numParagraphs, size_t numSentences, size_t wordsPerSentence) {
     std::wostringstream text;
@@ -58,9 +59,10 @@ void onGenerate() {
 }
 
 void onSave() {
-    wchar_t buffer[2048];
+    wchar_t buffer[8192];
     GetWindowText(hwndTextBox, buffer, sizeof(buffer) / sizeof(wchar_t));
-    std::wofstream file(L"output.txt");
+
+    std::wofstream file(L"C:\\Users\\Public\\Documents\\GeneratedText.txt");
     if (file) {
         file << buffer;
     }
@@ -83,17 +85,26 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         break;
     case WM_CREATE:
         hwndTextBox = CreateWindowW(L"EDIT", L"", WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL,
-            10, 10, 460, 200, hwnd, NULL, NULL, NULL);
+            10, 10, 600, 300, hwnd, NULL, NULL, NULL);
         hwndButtonGenerate = CreateWindowW(L"BUTTON", L"Generate", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-            10, 250, 100, 30, hwnd, (HMENU)ID_GENERATE, NULL, NULL);
+            10, 350, 100, 30, hwnd, (HMENU)ID_GENERATE, NULL, NULL);
         hwndButtonSave = CreateWindowW(L"BUTTON", L"Save", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-            120, 250, 100, 30, hwnd, (HMENU)ID_SAVE, NULL, NULL);
+            120, 350, 100, 30, hwnd, (HMENU)ID_SAVE, NULL, NULL);
+        hwndLabelParagraphs = CreateWindowW(L"STATIC", L"Paragraphs:", WS_CHILD | WS_VISIBLE,
+            10, 320, 80, 20, hwnd, NULL, NULL, NULL);
         hwndParagraphs = CreateWindowW(L"EDIT", L"1", WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER,
-            10, 220, 50, 20, hwnd, (HMENU)ID_PARAGRAPHS, NULL, NULL);
+            100, 320, 50, 20, hwnd, (HMENU)ID_PARAGRAPHS, NULL, NULL);
+        hwndLabelSentences = CreateWindowW(L"STATIC", L"Sentences:", WS_CHILD | WS_VISIBLE,
+            170, 320, 80, 20, hwnd, NULL, NULL, NULL);
         hwndSentences = CreateWindowW(L"EDIT", L"5", WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER,
-            70, 220, 50, 20, hwnd, (HMENU)ID_SENTENCES, NULL, NULL);
+            250, 320, 50, 20, hwnd, (HMENU)ID_SENTENCES, NULL, NULL);
+        hwndLabelWords = CreateWindowW(L"STATIC", L"Words:", WS_CHILD | WS_VISIBLE,
+            320, 320, 80, 20, hwnd, NULL, NULL, NULL);
         hwndWords = CreateWindowW(L"EDIT", L"8", WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER,
-            130, 220, 50, 20, hwnd, (HMENU)ID_WORDS, NULL, NULL);
+            400, 320, 50, 20, hwnd, (HMENU)ID_WORDS, NULL, NULL);
+        break;
+    case WM_SIZE:
+        MoveWindow(hwndTextBox, 10, 10, LOWORD(lp) - 20, HIWORD(lp) - 100, TRUE);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -111,7 +122,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrev, LPWSTR lpCmd, int nCmdShow
     wc.lpszClassName = L"TextGeneratorApp";
     RegisterClass(&wc);
     HWND hwnd = CreateWindowW(L"TextGeneratorApp", L"Text Generator", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        100, 100, 500, 320, NULL, NULL, hInst, NULL);
+        100, 100, 700, 450, NULL, NULL, hInst, NULL);
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
