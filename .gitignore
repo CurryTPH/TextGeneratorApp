@@ -1,0 +1,42 @@
+# Ignore Visual Studio cache and settings
+.vs/
+*.VC.db
+*.VC.opendb
+
+# Ignore build output directories
+Debug/
+Release/
+x64/
+x86/
+ipch/
+*.obj
+*.pch
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.exe
+*.dll
+*.log
+
+# Ignore temporary files
+*.tlog
+*.lastbuildstate
+*.user
+*.suo
+*.ncb
+*.sdf
+*.opendb
+
+# Ignore CMake and Build system files
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+
+# Ignore other unnecessary files
+*.cache
+*.idb
+*.ipdb
+*.iobj
+*.sbr
+*.cod
